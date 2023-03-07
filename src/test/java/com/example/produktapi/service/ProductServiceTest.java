@@ -40,7 +40,6 @@ class ProductServiceTest {
         verify(repository, times(1)).findAll();
         verifyNoMoreInteractions(repository);
     }
-
     @Test
     void whenGetAllCategories_thenExactlyOneInteractionWithRepositoryMethodGetByCategory() {
         // when
@@ -49,7 +48,6 @@ class ProductServiceTest {
         verify(repository, times(1)).findAllCategories();
         verifyNoMoreInteractions(repository);
     }
-
     @Test
     @Disabled
     void givenAnExistingCategory_whenGetProductsByCategory_thenReceivesANonEmptyList() {
@@ -86,30 +84,32 @@ class ProductServiceTest {
 
 
 
-
     @Test
-    void getAllProducts() {
+    void getAllProductsAnvVerifyFindALl() {
         underTest.getAllProducts();
         verify(repository).findAll();
+        verifyNoMoreInteractions(repository);
     }
 
     @Test
-    void getAllCategories() {
+    void getAllCategoriesAnvVerifyFindAllCategoris() {
         underTest.getAllCategories();
         verify(repository).findAllCategories();
+        verifyNoMoreInteractions(repository);
     }
 
     @Test
-    void getProductsByCategory() {
+    void getProductsByCategoryAnvVerifFindByCategory() {
         underTest.getProductsByCategory("electronic");
         verify(repository,times(1)).findByCategory("electronic");
+        verifyNoMoreInteractions(repository);
     }
 
 
 
 
     @Test
-    void getProductById() {
+    void getProductByIdAnvVerifyFindById() {
         Integer id = 1;
         Product product = new Product(id,"Rätt objekt som sparas", 4000.0, "", "", "");
 
@@ -120,7 +120,7 @@ class ProductServiceTest {
     }
     @Test
     //suppose to fail.
-    void updateProduct() {
+    void updateProductVerifySaveAndFailAssertEquals() {
         Integer id = 1;
         Product product = new Product(id,"Rätt objekt som sparas", 4000.0, "", "", "");
         given(repository.findById(id)).willReturn(Optional.of(product));
@@ -128,11 +128,11 @@ class ProductServiceTest {
         underTest.updateProduct(product1,id);
 
         verify(repository).save(productCaptor.capture());
-        assertNotEquals(product1 ,productCaptor.getValue());
+        assertEquals(product1 ,productCaptor.getValue());
     }
 
     @Test
-    void deleteProduct() {
+    void deleteProductAndVerifyDeleteById() {
         Integer id = 1;
         Product product = new Product(id,"Rätt objekt som sparas", 4000.0, "", "", "");
         given(repository.findById(id)).willReturn(Optional.of(product));

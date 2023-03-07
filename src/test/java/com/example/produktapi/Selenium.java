@@ -32,8 +32,6 @@ public class Selenium {
 
     @Test
     public void numberOfProductsShouldBeTwenty(){
-        // WebDriver driver;
-        // System.setProperty("webdriver.chrome.driver","C:\\WebDriver\\bin\\chromedriver");
         WebDriver driver = new ChromeDriver();
 
         driver.get("https://java22.netlify.app/");
@@ -78,21 +76,3 @@ public class Selenium {
         driver.quit();
     }
 }
-
-// Kolla på detta sen
-/*
-   @Test
-    public void imageShouldBeVisible() {
-        WebDriver driver = new FirefoxDriver();
-
-        driver.get("https://java22.netlify.app/");
-
-        WebElement waiter = new WebDriverWait(driver, java.time.Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div/div/div[6]/div/div/div/div[1]/div/img")));
-
-        assertTrue(waiter.isDisplayed(), "bilden verkar inte läsas in");
-
-        //WebElement productImage = driver.findElement(By.xpath("/html/body/div/div/div[6]/div/div/div/div[1]/div/img"));
-        driver.quit();
-    }
- */
