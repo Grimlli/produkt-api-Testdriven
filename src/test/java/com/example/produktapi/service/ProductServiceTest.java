@@ -49,12 +49,6 @@ class ProductServiceTest {
         verifyNoMoreInteractions(repository);
     }
     @Test
-    @Disabled
-    void givenAnExistingCategory_whenGetProductsByCategory_thenReceivesANonEmptyList() {
-        // Skippar för nu
-    }
-
-    @Test
     void whenAddingAProduct_thenSaveMethodShouldBeCalled() {
         // given
         Product product = new Product("Rätt objekt som sparas", 4000.0, "", "", "");
@@ -119,6 +113,7 @@ class ProductServiceTest {
 
     }
     @Test
+
     //suppose to fail.
     void updateProductVerifySaveAndFailAssertEquals() {
         Integer id = 1;
