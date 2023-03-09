@@ -19,4 +19,6 @@ public class ProduktapiApplication {
 		productList.put(firstProduct.getId(),firstProduct);
 	}
 	public static Map<Integer, Product> productList = new HashMap<>();
+
+	// Random comment to test git
 }
