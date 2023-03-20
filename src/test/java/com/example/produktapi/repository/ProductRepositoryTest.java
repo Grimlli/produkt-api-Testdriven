@@ -21,30 +21,15 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Random;
+
 @DataJpaTest
-@ExtendWith(MockitoExtension.class)
 class ProductRepositoryTest {
-
-    @Mock
-    private ProductRepository repository;
-
-    @InjectMocks
-    private ProductService mockUnderTest;
-
-    @Captor
-    ArgumentCaptor<Product> productCaptor;
 
     @Autowired
     private ProductRepository underTest;
 
 
-    @Test
-    void simpleTest() {
-        List<Product> products = underTest.findAll();
-        Assertions.assertFalse(products.isEmpty());
-    }
-
-    // I think this is not what I am suppose to test
     @Test
     void whenSearchingForAnExistingTitle_thenReturnThatProduct() {
         //given
@@ -54,19 +39,11 @@ class ProductRepositoryTest {
                 title,
                 25000.0,
                 "Elekronik",
-                "bra o ha",
-                "urlTillBild");
+                "Det är en produkt",
+                "BILD");
         underTest.save(product2);
-        Optional<Product> optionalProduct = underTest.findById(2);
+        Optional<Product> optionalProduct = underTest.findByTitle(title);
 
-        //then
-        // Ett sätt att skriva 3 tester
-        assertTrue(optionalProduct.isPresent());
-        assertFalse(optionalProduct.isEmpty());
-        assertEquals(title, optionalProduct.get().getTitle());
-
-
-        // Ett annat sätt att skriva samma 3 tester
         Assertions.assertAll(
                 () -> assertTrue(optionalProduct.isPresent()),
                 () -> assertFalse(optionalProduct.isEmpty()),
@@ -74,95 +51,65 @@ class ProductRepositoryTest {
         );
     }
 
+    @Test
+    void whenGivenNewCategoryFindProductWithCategory(){
+        String category = "Elekronik";
+
+        Product product2 = new Product(2,
+                "Random",
+                25000.0,
+                category,
+                "Det är en produkt",
+                "BILD");
+        underTest.save(product2);
+        List<Product> optionalProduct = underTest.findByCategory(category);
+
+        Assertions.assertAll(
+                () -> assertFalse(optionalProduct.isEmpty()),
+                () -> assertEquals(category, optionalProduct.get(0).getCategory())
+        );
+    }
+
+    @Test
+    void findAllCategory(){
+        String[] category = {
+                "electronics",
+                "jewelery",
+                "men's clothing",
+                "women's clothing"
+        };
+
+        List<String> optionalProduct = underTest.findAllCategories();
+
+        Assertions.assertAll(
+                () -> assertFalse(optionalProduct.isEmpty()),
+                ()-> assertEquals(4,optionalProduct.size()),
+                () -> assertEquals(category[0], optionalProduct.get(0)),
+                () -> assertEquals(category[1], optionalProduct.get(1)),
+                () -> assertEquals(category[2], optionalProduct.get(2)),
+                () -> assertEquals(category[3], optionalProduct.get(3))
+
+        );
+    }
+
+/*
+- findAllCategories
+- findByCategory
+- findByTitle
+
+*/
+
 
     @Test
     void whenSearchingForNonExistingTitle_thenReturnEmptyOptional(){
-        // given
         String title = "En titel som absolut inte finns";
-        // when
+
         Optional<Product> optionalProduct = underTest.findByTitle(title);
 
-        // then
         Assertions.assertAll(
                 ()-> assertFalse(optionalProduct.isPresent()),
                 () -> assertTrue(optionalProduct.isEmpty()),
                 () -> assertThrows(NoSuchElementException.class, ()-> optionalProduct.get())
         );
     }
-/*
-    @Test
-    void updateProduct(){
-        // given
-
-
-        String title = "En dator";
-
-        Product product = new Product(2,
-                title,
-                25000.0,
-                "Elekronik",
-                "bra o ha",
-                "urlTillBild");
-        Product productUpdate = new Product(2,
-                title,
-                23335.0,
-                "Elekronik",
-                "Dåligt att ha",
-                "urlTillBild");
-        mockUnderTest.addProduct(product);
-        mockUnderTest.updateProduct(productUpdate,2);
-        verify(repository).save(productCaptor.capture());
-        Assertions.assertAll(
-                ()-> assertTrue(productCaptor.isPresent()),
-                () -> assertFalse(optionalProduct.isEmpty()),
-                () -> assertNotEquals(productUpdate,optionalProduct),
-                () -> assertThrows(NoSuchElementException.class, ()-> optionalProduct.get())
-        );
-    }
-*/
-
-    @Test
-    void getProductByIDWhenNoProductExistWhithID(){
-        Integer id = 1;
-        //Product product = new Product(id,"Rätt objekt som sparas", 4000.0, "", "", "");
-        //BDDMockito.given(repository.findById(id)).willReturn(Optional.of(product));
-        EntityNotFoundException thrown = Assertions.assertThrows(EntityNotFoundException.class, () -> mockUnderTest.getProductById(id));
-
-        /*
-        mockUnderTest.getProductById(id);
-        verify(repository).findById(id);
-         */
-        Assertions.assertAll(
-                ()-> Assertions.assertEquals("Produkt med id 1 hittades inte",thrown.getMessage())
-               // ()-> verify(repository, never()).save(any())
-        );
-    }
-
-    @Test
-    void deleteProductByIDWhenNoProductExistWhithID(){
-        Integer id = 1;
-        EntityNotFoundException thrown = Assertions.assertThrows(EntityNotFoundException.class, () -> mockUnderTest.deleteProduct(id));
-
-
-        Assertions.assertAll(
-                ()-> Assertions.assertEquals("Produkt med id 1 hittades inte",thrown.getMessage())
-        );
-    }
-
-    @Test
-    void uppdateProductByIDWhenNoProductExistWhithID(){
-        Integer id = 1;
-        Product productUpdate = new Product(2,
-                "Fake Product",
-                23335.0,
-                "Elekronik",
-                "Dåligt att ha",
-                "urlTillBild");
-        EntityNotFoundException thrown = Assertions.assertThrows(EntityNotFoundException.class, () -> mockUnderTest.updateProduct(productUpdate,id));
-
-        Assertions.assertAll(
-                ()-> Assertions.assertEquals("Produkt med id 1 hittades inte",thrown.getMessage())
-        );
-    }
-
 }

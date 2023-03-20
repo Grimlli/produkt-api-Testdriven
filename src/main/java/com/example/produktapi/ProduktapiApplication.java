@@ -20,5 +20,4 @@ public class ProduktapiApplication {
 	}
 	public static Map<Integer, Product> productList = new HashMap<>();
 
-	// Random comment to test git
 }

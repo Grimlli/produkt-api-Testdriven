@@ -2,8 +2,10 @@ package com.example.produktapi.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import com.example.produktapi.exception.BadRequestException;
+import com.example.produktapi.exception.EntityNotFoundException;
 import com.example.produktapi.model.Product;
 import com.example.produktapi.repository.ProductRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -140,4 +142,46 @@ class ProductServiceTest {
 
         verify(repository).deleteById(id);
     }
+
+
+    @Test
+    void getProductByIDWhenNoProductExistWhithID(){
+        Integer id = 1;
+
+        EntityNotFoundException thrown = Assertions.assertThrows(EntityNotFoundException.class, () -> underTest.getProductById(id));
+
+        Assertions.assertAll(
+                ()-> Assertions.assertEquals("Produkt med id 1 hittades inte",thrown.getMessage())
+                // ()-> verify(repository, never()).save(any())
+        );
+    }
+
+    @Test
+    void deleteProductByIDWhenNoProductExistWhithID(){
+        Integer id = 1;
+        EntityNotFoundException thrown = Assertions.assertThrows(EntityNotFoundException.class, () -> underTest.deleteProduct(id));
+
+
+        Assertions.assertAll(
+                ()-> Assertions.assertEquals("Produkt med id 1 hittades inte",thrown.getMessage())
+        );
+    }
+
+    @Test
+    void uppdateProductByIDWhenNoProductExistWhithID(){
+        Integer id = 1;
+        Product productUpdate = new Product(2,
+                "Fake Product",
+                23335.0,
+                "Elekronik",
+                "Dåligt att ha",
+                "urlTillBild");
+        EntityNotFoundException thrown = Assertions.assertThrows(EntityNotFoundException.class, () -> underTest.updateProduct(productUpdate,id));
+
+        Assertions.assertAll(
+                ()-> Assertions.assertEquals("Produkt med id 1 hittades inte",thrown.getMessage())
+        );
+    }
+
+
 }
